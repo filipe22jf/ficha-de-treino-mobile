@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Gerador de Fichas de Treino - Mobile</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 10px;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      
+      .container {
+        max-width: 100%;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      }
+      
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      .logo-template {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        color: white;
+      }
+      
+      .logo-template h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+      
+      .logo-template p {
+        margin: 5px 0 0 0;
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+      
+      .header h1 {
+        color: #333;
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      
+      .card {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+        margin-bottom: 20px;
+      }
+      
+      .card h2 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.3rem;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+      }
+      
+      select, input, button {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        background: white;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      
+      select {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+        padding-right: 40px;
+      }
+      
+      input[type="number"] {
+        text-align: center;
+      }
+      
+      button {
+        background: #667eea;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+        font-size: 16px;
+        padding: 18px;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+      
+      button:hover, button:active {
+        background: #5a6fd8;
+      }
+      
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      
+      .exercise-item {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 4px solid #667eea;
+        position: relative;
+      }
+      
+      .exercise-item h3 {
+        margin: 0 0 8px 0;
+        color: #333;
+        font-size: 16px;
+        padding-right: 40px;
+      }
+      
+      .exercise-item .details {
+        color: #666;
+        font-size: 14px;
+        margin: 5px 0;
+        line-height: 1.4;
+      }
+      
+      .exercise-item .technique {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        display: inline-block;
+        margin-top: 8px;
+        line-height: 1.3;
+      }
+      
+      .remove-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px !important;
+        height: 30px !important;
+        padding: 0 !important;
+        background: #dc3545 !important;
+        font-size: 14px !important;
+        border-radius: 50% !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: auto;
+      }
+      
+      .empty-state {
+        text-align: center;
+        color: #999;
+        padding: 30px 20px;
+      }
+      
+      .empty-state svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+      
+      .counter {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+      
+      .pdf-options {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .pdf-options h3 {
+        margin: 0 0 10px 0;
+        color: #856404;
+        font-size: 16px;
+      }
+      
+      .pdf-options p {
+        margin: 0;
+        color: #856404;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      
+      .option-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+      }
+      
+      .option-btn {
+        padding: 12px !important;
+        font-size: 14px !important;
+        margin-top: 0 !important;
+      }
+      
+      .option-btn.simple {
+        background: #28a745 !important;
+      }
+      
+      .option-btn.simple:hover {
+        background: #218838 !important;
+      }
+      
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        color: #667eea;
+      }
+      
+      .loading.show {
+        display: block;
+      }
+      
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @media (max-width: 480px) {
+        .container {
+          padding: 15px;
+        }
+        
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        
+        .option-buttons {
+          grid-template-columns: 1fr;
+        }
+        
+        .header h1 {
+          font-size: 1.5rem;
+        }
+        
+        .logo-template h2 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-template">
+        <h2>🏋️ FILIPE SOARES</h2>
+        <p>CONSULTORIA ESPORTIVA</p>
+      </div>
+      
+      <div class="header">
+        <h1>Gerador de Fichas de Treino</h1>
+        <p style="color: #666; margin-top: 10px; font-size: 14px;">Versão Mobile Otimizada</p>
+      </div>
+      
+      <div class="card">
+        <h2>➕ Adicionar Exercício</h2>
+        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Configure seu exercício com todos os detalhes</p>
+        
+        <div class="form-group">
+          <label for="grupo-muscular">Grupo Muscular</label>
+          <select id="grupo-muscular">
+            <option value="">Selecione o grupo muscular</option>
+            <option value="peitoral">Peitoral</option>
+            <option value="dorsais">Dorsais (Costas)</option>
+            <option value="ombros">Ombros (Deltoides)</option>
+            <option value="bracos">Braços</option>
+            <option value="pernas">Pernas</option>
+            <option value="gluteos">Glúteos</option>
+            <option value="abdomen">Abdômen</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="exercicio">Exercício</label>
+          <select id="exercicio" disabled>
+            <option value="">Primeiro selecione o grupo muscular</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="series">Séries</label>
+            <input type="number" id="series" min="1" max="10" value="3">
+          </div>
+          <div class="form-group">
+            <label for="repeticoes">Repetições</label>
+            <input type="number" id="repeticoes" min="1" max="50" value="12">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="tecnica">Técnica (Opcional)</label>
+          <select id="tecnica">
+            <option value="">Nenhuma técnica</option>
+            <option value="Drop set">Drop set</option>
+            <option value="Rest-pause">Rest-pause</option>
+            <option value="Bi-set">Bi-set</option>
+            <option value="Tri-set">Tri-set</option>
+            <option value="Giant set">Giant set</option>
+            <option value="Super-set">Super-set</option>
+            <option value="Pré-exaustão">Pré-exaustão</option>
+            <option value="Pós-exaustão">Pós-exaustão</option>
+            <option value="Isometria">Isometria</option>
+            <option value="Parciais">Parciais</option>
+            <option value="Forçada">Forçada</option>
+            <option value="Negativa">Negativa</option>
+            <option value="Cluster set">Cluster set</option>
+            <option value="Piramidal crescente">Piramidal crescente</option>
+            <option value="Piramidal decrescente">Piramidal decrescente</option>
+            <option value="FST-7">FST-7</option>
+          </select>
+        </div>
+        
+        <button onclick="adicionarExercicio()">Adicionar à Ficha</button>
+      </div>
+      
+      <div class="card">
+        <h2>📋 Sua Ficha de Treino</h2>
+        <div class="counter">0 exercício(s) adicionado(s)</div>
+        
+        <div id="lista-exercicios">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <div>
+              <strong>Nenhum exercício adicionado ainda</strong><br>
+              Selecione exercícios para começar sua ficha
+            </div>
+          </div>
+        </div>
+        
+        <div id="pdf-section" style="display: none;">
+          <div class="pdf-options">
+            <h3>📱 Opções de PDF para Mobile</h3>
+            <p>Escolha a melhor opção para seu dispositivo:</p>
+            <div class="option-buttons">
+              <button class="option-btn simple" onclick="gerarPDFSimples()">
+                PDF Simples<br>
+                <small>Sem imagens, mais compatível</small>
+              </button>
+              <button class="option-btn" onclick="gerarPDFCompleto()">
+                PDF Completo<br>
+                <small>Com imagens, pode falhar</small>
+              </button>
+            </div>
+          </div>
+          
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Gerando PDF...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+      const exerciciosPorGrupo = {
+        peitoral: [
+          'Supino reto', 'Supino inclinado', 'Supino declinado', 'Supino com pegada fechada',
+          'Crucifixo reto', 'Crucifixo inclinado', 'Crucifixo declinado', 'Pullover com halteres',
+          'Pullover com barra', 'Flexão de braço tradicional', 'Flexão com pegada fechada',
+          'Flexão diamante', 'Flexão arqueiro', 'Flexão explosiva/pliométrica', 'Peck deck (voador)',
+          'Crossover alto, médio e baixo', 'Supino máquina (reto, inclinado e declinado)',
+          'Press convergente na máquina', 'Press no Smith', 'Cable fly (fly no cabo, inclinado ou declinado)'
+        ],
+        dorsais: [
+          'Barra fixa (pronada, supinada, neutra)', 'Pulldown frente', 'Pulldown inverso',
+          'Pulldown atrás da nuca', 'Pulldown com pegada fechada', 'Pulldown unilateral no cabo',
+          'Remada curvada com barra', 'Remada curvada pronada', 'Remada curvada supinada',
+          'Remada curvada com pegada mista', 'Remada unilateral com halteres', 'Remada baixa no pulley',
+          'Remada cavalinho (T-bar row)', 'Remada no Smith', 'Remada na máquina articulada',
+          'Remada serratus (focando serrátil)', 'Pullover no cabo', 'Pullover com halteres',
+          'Levantamento terra tradicional', 'Terra romeno', 'Terra sumô', 'Good morning',
+          'Meadows row (remada unilateral na barra T)'
+        ],
+        ombros: [
+          'Desenvolvimento militar', 'Desenvolvimento Arnold', 'Elevação frontal barra/halteres/cabo',
+          'Landmine press', 'Elevação lateral com halteres', 'Elevação lateral no cabo',
+          'Elevação lateral sentado', 'Elevação lateral parcial (ponto médio)',
+          'Crucifixo inverso com halteres', 'Crucifixo inverso no cabo', 'Crucifixo inverso na máquina',
+          'Face pull', 'Clean & press', 'Push press', 'Remada alta (barra, cabo, halteres)'
+        ],
+        bracos: [
+          'Rosca direta (barra reta, barra W, halteres)', 'Rosca alternada', 'Rosca martelo',
+          'Rosca concentrada', 'Rosca Scott (barra ou halteres)', 'Rosca no cabo baixo',
+          'Rosca 21', 'Rosca spider', 'Rosca inversa', 'Tríceps testa', 'Tríceps francês',
+          'Tríceps corda', 'Tríceps barra reta', 'Tríceps coice', 'Tríceps banco (mergulho)',
+          'Paralelas (dips)', 'Tríceps invertido no cabo', 'JM press', 'Flexão de punho pronada',
+          'Flexão de punho supinada', 'Farmer\'s walk', 'Pronação e supinação com halter', 'Wrist roller'
+        ],
+        pernas: [
+          'Agachamento livre', 'Agachamento frontal', 'Hack squat', 'Leg press 45°',
+          'Cadeira extensora', 'Passada', 'Afundo', 'Afundo búlgaro', 'Stiff', 'Stiff romeno',
+          'Mesa flexora', 'Flexora sentado', 'Nordic curl', 'Adutora no banco/máquina',
+          'Abdução no cabo/máquina', 'Elevação lateral de perna com caneleira'
+        ],
+        gluteos: [
+          'Hip thrust', 'Glute bridge', 'Glute bridge unilateral', 'Kickback no cabo',
+          'Step-up no banco', 'Abdução no cabo', 'Abdução na máquina', 'Peso morto sumô'
+        ],
+        abdomen: [
+          'Abdominal tradicional', 'Abdominal supra/inferior', 'Elevação de pernas',
+          'Elevação de joelhos', 'Prancha', 'Prancha lateral', 'Prancha com elevação alternada',
+          'Abdominal no cabo', 'Abdominal na bola suíça', 'Ab wheel rollout'
+        ]
+      };
+
+      const tecnicasDescricoes = {
+        'Drop set': 'Reduz a carga após a falha e continua o exercício',
+        'Rest-pause': 'Pausas curtas (10–15 seg) e mais repetições até falhar',
+        'Bi-set': 'Dois exercícios para o mesmo músculo, sem descanso',
+        'Tri-set': 'Três exercícios para o mesmo músculo, sem descanso',
+        'Giant set': 'Quatro ou mais exercícios para o mesmo músculo',
+        'Super-set': 'Dois exercícios de músculos antagonistas sem descanso',
+        'Pré-exaustão': 'Exercício isolado antes do composto',
+        'Pós-exaustão': 'Exercício composto antes do isolado',
+        'Isometria': 'Segurar o peso em um ponto fixo por tempo',
+        'Parciais': 'Movimentos incompletos para prolongar estímulo',
+        'Forçada': 'Parceiro auxilia após a falha',
+        'Negativa': 'Ênfase na fase excêntrica',
+        'Cluster set': 'Intervalos curtos entre pequenas séries dentro da mesma série',
+        'Piramidal crescente': 'Aumenta a carga e diminui repetições',
+        'Piramidal decrescente': 'Diminui carga e aumenta repetições',
+        'FST-7': '7 séries de um mesmo exercício com pouco descanso (30–45 seg)'
+      };
+
+      let fichaExercicios = [];
+
+      // Atualizar exercícios quando grupo muscular mudar
+      document.getElementById('grupo-muscular').addEventListener('change', function() {
+        const grupoSelecionado = this.value;
+        const selectExercicio = document.getElementById('exercicio');
+        
+        selectExercicio.innerHTML = '<option value="">Selecione o exercício</option>';
+        
+        if (grupoSelecionado && exerciciosPorGrupo[grupoSelecionado]) {
+          selectExercicio.disabled = false;
+          exerciciosPorGrupo[grupoSelecionado].forEach(exercicio => {
+            const option = document.createElement('option');
+            option.value = exercicio;
+            option.textContent = exercicio;
+            selectExercicio.appendChild(option);
+          });
+        } else {
+          selectExercicio.disabled = true;
+        }
+      });
+
+      function adicionarExercicio() {
+        const grupo = document.getElementById('grupo-muscular').value;
+        const exercicio = document.getElementById('exercicio').value;
+        const series = document.getElementById('series').value;
+        const repeticoes = document.getElementById('repeticoes').value;
+        const tecnica = document.getElementById('tecnica').value;
+
+        if (!grupo || !exercicio || !series || !repeticoes) {
+          alert('Por favor, preencha todos os campos obrigatórios.');
+          return;
+        }
+
+        const novoExercicio = {
+          grupo,
+          exercicio,
+          series: parseInt(series),
+          repeticoes: parseInt(repeticoes),
+          tecnica
+        };
+
+        fichaExercicios.push(novoExercicio);
+        atualizarListaExercicios();
+        limparFormulario();
+      }
+
+      function atualizarListaExercicios() {
+        const listaContainer = document.getElementById('lista-exercicios');
+        const counter = document.querySelector('.counter');
+        const pdfSection = document.getElementById('pdf-section');
+        
+        counter.textContent = `${fichaExercicios.length} exercício(s) adicionado(s)`;
+
+        if (fichaExercicios.length === 0) {
+          listaContainer.innerHTML = `
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <div>
+                <strong>Nenhum exercício adicionado ainda</strong><br>
+                Selecione exercícios para começar sua ficha
+              </div>
+            </div>
+          `;
+          pdfSection.style.display = 'none';
+        } else {
+          let html = '';
+          fichaExercicios.forEach((item, index) => {
+            html += `
+              <div class="exercise-item">
+                <button class="remove-btn" onclick="removerExercicio(${index})">×</button>
+                <h3>${index + 1}. ${item.exercicio}</h3>
+                <div class="details">
+                  <strong>Grupo:</strong> ${item.grupo.charAt(0).toUpperCase() + item.grupo.slice(1)}<br>
+                  <strong>Séries:</strong> ${item.series} | <strong>Repetições:</strong> ${item.repeticoes}
+                </div>
+                ${item.tecnica ? `
+                  <div class="technique">
+                    <strong>Técnica:</strong> ${item.tecnica}
+                    ${tecnicasDescricoes[item.tecnica] ? `<br><em>${tecnicasDescricoes[item.tecnica]}</em>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          });
+          listaContainer.innerHTML = html;
+          pdfSection.style.display = 'block';
+        }
+      }
+
+      function removerExercicio(index) {
+        fichaExercicios.splice(index, 1);
+        atualizarListaExercicios();
+      }
+
+      function limparFormulario() {
+        document.getElementById('grupo-muscular').value = '';
+        document.getElementById('exercicio').value = '';
+        document.getElementById('exercicio').disabled = true;
+        document.getElementById('exercicio').innerHTML = '<option value="">Primeiro selecione o grupo muscular</option>';
+        document.getElementById('series').value = '3';
+        document.getElementById('repeticoes').value = '12';
+        document.getElementById('tecnica').value = '';
+      }
+
+      function mostrarLoading() {
+        document.getElementById('loading').classList.add('show');
+      }
+
+      function esconderLoading() {
+        document.getElementById('loading').classList.remove('show');
+      }
+
+      async function gerarPDFSimples() {
+        if (fichaExercicios.length === 0) {
+          alert('Adicione pelo menos um exercício antes de gerar o PDF.');
+          return;
+        }
+
+        mostrarLoading();
+
+        try {
+          // Criar elemento temporário para PDF simples
+          const elementoPDF = document.createElement('div');
+          elementoPDF.style.cssText = `
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: white;
+            color: black;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+          `;
+
+          let conteudoPDF = `
+            <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: #667eea; color: white; border-radius: 8px;">
+              <h1 style="margin: 0; font-size: 28px;">🏋️ FILIPE SOARES</h1>
+              <p style="margin: 5px 0 0 0; font-size: 16px;">CONSULTORIA ESPORTIVA</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h2 style="color: #333; margin: 0; font-size: 24px;">Ficha de Treino</h2>
+              <p style="color: #666; margin: 10px 0 0 0;">Gerada em ${new Date().toLocaleDateString('pt-BR')}</p>
+              <p style="color: #666; margin: 5px 0 0 0;">Total de exercícios: ${fichaExercicios.length}</p>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+          `;
+
+          fichaExercicios.forEach((item, i) => {
+            conteudoPDF += `
+              <div style="background: #f8f9fa; padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #667eea; page-break-inside: avoid;">
+                <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px; font-weight: bold;">${i + 1}. ${item.exercicio}</h3>
+                <div style="color: #666; font-size: 14px; margin: 5px 0; line-height: 1.4;">
+                  <strong>Grupo Muscular:</strong> ${item.grupo.charAt(0).toUpperCase() + item.grupo.slice(1)}<br>
+                  <strong>Séries:</strong> ${item.series} | <strong>Repetições:</strong> ${item.repeticoes}
+                </div>
+                ${item.tecnica ? `
+                  <div style="background: #e3f2fd; color: #1976d2; padding: 8px 12px; border-radius: 4px; font-size: 12px; margin-top: 10px; display: inline-block;">
+                    <strong>Técnica:</strong> ${item.tecnica}
+                    ${tecnicasDescricoes[item.tecnica] ? `<br><em>${tecnicasDescricoes[item.tecnica]}</em>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          });
+
+          conteudoPDF += `
+            </div>
+            <div style="margin-top: 30px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Ficha gerada pelo sistema de Filipe Soares - Consultoria Esportiva<br>
+                Versão Mobile Otimizada
+              </p>
+            </div>
+          `;
+
+          elementoPDF.innerHTML = conteudoPDF;
+          document.body.appendChild(elementoPDF);
+
+          // Configurações otimizadas para mobile
+          const opcoesPDF = {
+            margin: 0.5,
+            filename: `ficha-treino-mobile-${new Date().toLocaleDateString("pt-BR").replace(/\//g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.8 },
+            html2canvas: { 
+              scale: 1,
+              useCORS: false,
+              allowTaint: false,
+              backgroundColor: '#ffffff',
+              width: 800,
+              height: null
+            },
+            jsPDF: { 
+              unit: 'in', 
+              format: 'a4', 
+              orientation: 'portrait' 
+            }
+          };
+
+          await html2pdf().from(elementoPDF).set(opcoesPDF).save();
+          
+          document.body.removeChild(elementoPDF);
+          esconderLoading();
+          
+        } catch (error) {
+          console.error("Erro ao gerar PDF:", error);
+          esconderLoading();
+          alert("Erro ao gerar PDF. Tente novamente ou use a opção de PDF completo.");
+        }
+      }
+
+      async function gerarPDFCompleto() {
+        if (fichaExercicios.length === 0) {
+          alert('Adicione pelo menos um exercício antes de gerar o PDF.');
+          return;
+        }
+
+        mostrarLoading();
+
+        try {
+          // Versão com tentativa de incluir imagens (pode falhar no mobile)
+          const elementoPDF = document.createElement('div');
+          elementoPDF.style.cssText = `
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: white;
+            color: black;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+          `;
+
+          let conteudoPDF = `
+            <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: #667eea; color: white; border-radius: 8px;">
+              <h1 style="margin: 0; font-size: 28px;">🏋️ FILIPE SOARES</h1>
+              <p style="margin: 5px 0 0 0; font-size: 16px;">CONSULTORIA ESPORTIVA</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h2 style="color: #333; margin: 0; font-size: 24px;">Ficha de Treino Completa</h2>
+              <p style="color: #666; margin: 10px 0 0 0;">Gerada em ${new Date().toLocaleDateString('pt-BR')}</p>
+              <p style="color: #666; margin: 5px 0 0 0;">Total de exercícios: ${fichaExercicios.length}</p>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+          `;
+
+          for (let i = 0; i < fichaExercicios.length; i++) {
+            const item = fichaExercicios[i];
+            
+            // Adicionar exercício com placeholder para imagem
+            conteudoPDF += `
+              <div style="background: #f8f9fa; padding: 20px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #667eea; page-break-inside: avoid; display: flex; align-items: center; gap: 15px;">
+                <div style="width: 100px; height: 100px; background: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 12px; text-align: center; flex-shrink: 0;">
+                  Imagem do<br>Exercício
+                </div>
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px; font-weight: bold;">${i + 1}. ${item.exercicio}</h3>
+                  <div style="color: #666; font-size: 14px; margin: 5px 0; line-height: 1.4;">
+                    <strong>Grupo Muscular:</strong> ${item.grupo.charAt(0).toUpperCase() + item.grupo.slice(1)}<br>
+                    <strong>Séries:</strong> ${item.series} | <strong>Repetições:</strong> ${item.repeticoes}
+                  </div>
+                  ${item.tecnica ? `
+                    <div style="background: #e3f2fd; color: #1976d2; padding: 8px 12px; border-radius: 4px; font-size: 12px; margin-top: 10px; display: inline-block;">
+                      <strong>Técnica:</strong> ${item.tecnica}
+                      ${tecnicasDescricoes[item.tecnica] ? `<br><em>${tecnicasDescricoes[item.tecnica]}</em>` : ''}
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }
+
+          conteudoPDF += `
+            </div>
+            <div style="margin-top: 30px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                Ficha gerada pelo sistema de Filipe Soares - Consultoria Esportiva<br>
+                Versão Mobile com Imagens
+              </p>
+            </div>
+          `;
+
+          elementoPDF.innerHTML = conteudoPDF;
+          document.body.appendChild(elementoPDF);
+
+          // Configurações mais agressivas para tentar funcionar no mobile
+          const opcoesPDF = {
+            margin: 0.3,
+            filename: `ficha-treino-completa-${new Date().toLocaleDateString("pt-BR").replace(/\//g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.6 },
+            html2canvas: { 
+              scale: 1.5,
+              useCORS: false,
+              allowTaint: false,
+              backgroundColor: '#ffffff',
+              width: 800,
+              height: null
+            },
+            jsPDF: { 
+              unit: 'in', 
+              format: 'a4', 
+              orientation: 'portrait' 
+            }
+          };
+
+          await html2pdf().from(elementoPDF).set(opcoesPDF).save();
+          
+          document.body.removeChild(elementoPDF);
+          esconderLoading();
+          
+        } catch (error) {
+          console.error("Erro ao gerar PDF completo:", error);
+          esconderLoading();
+          alert("Erro ao gerar PDF completo. Tente a opção de PDF simples que é mais compatível com dispositivos móveis.");
+        }
+      }
+    </script>
+  </body>
+</html>
+
